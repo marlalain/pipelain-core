@@ -1,3 +1,7 @@
+mod player;
+
+use crate::player::player_input;
+use crate::player::Player;
 use bracket_lib::color::{BLACK, RED, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
@@ -22,10 +26,7 @@ struct Renderable {
     bg: RGB,
 }
 
-#[derive(Component, Debug)]
-struct Player {}
-
-struct State {
+pub struct State {
     world: World,
 }
 
@@ -41,29 +42,6 @@ impl GameState for State {
         for (pos, render) in (&positions, &renderables).join() {
             ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
         }
-    }
-}
-
-fn try_move_player(delta_x: i32, delta_y: i32, world: &mut World) {
-    let mut positions = world.write_storage::<Position>();
-    let mut players = world.write_storage::<Player>();
-
-    for (_player, pos) in (&mut players, &mut positions).join() {
-        pos.x = min(79, max(0, pos.x + delta_x));
-        pos.y = min(49, max(0, pos.y + delta_y));
-    }
-}
-
-fn player_input(state: &mut State, ctx: &mut BTerm) {
-    match ctx.key {
-        None => {}
-        Some(key) => match key {
-            VirtualKeyCode::H => try_move_player(-1, 0, &mut state.world),
-            VirtualKeyCode::L => try_move_player(1, 0, &mut state.world),
-            VirtualKeyCode::K => try_move_player(0, -1, &mut state.world),
-            VirtualKeyCode::J => try_move_player(0, 1, &mut state.world),
-            _ => {}
-        },
     }
 }
 
@@ -89,19 +67,6 @@ fn main() -> BError {
         })
         .with(Player {})
         .build();
-
-    for i in 0..10 {
-        state
-            .world
-            .create_entity()
-            .with(Position { x: i * 7, y: 20 })
-            .with(Renderable {
-                glyph: to_cp437('♂'),
-                fg: RGB::named(RED),
-                bg: RGB::named(BLACK),
-            })
-            .build();
-    }
 
     main_loop(context, state)
 }
