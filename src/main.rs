@@ -1,19 +1,19 @@
+mod map;
 mod player;
 mod state;
 
+use crate::map::new_map;
 use crate::player::player_input;
 use crate::player::Player;
 use crate::state::State;
-use bracket_lib::color::{BLACK, RED, RGB, YELLOW};
+use bracket_lib::color::{BLACK, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
 };
-use bracket_lib::terminal::Font;
 use specs::Component;
 use specs::DenseVecStorage;
-use specs::{Builder, Join, World, WorldExt};
+use specs::{Builder, World, WorldExt};
 use specs_derive::Component;
-use std::cmp::{max, min};
 
 #[derive(Component)]
 struct Position {
@@ -28,9 +28,6 @@ struct Renderable {
     bg: RGB,
 }
 
-    }
-}
-
 fn main() -> BError {
     let context = BTermBuilder::simple80x50().with_title("PipeLain").build()?;
 
@@ -41,6 +38,8 @@ fn main() -> BError {
     state.world.register::<Position>();
     state.world.register::<Renderable>();
     state.world.register::<Player>();
+
+    state.world.insert(new_map());
 
     let _player = state
         .world
