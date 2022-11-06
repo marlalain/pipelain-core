@@ -12,7 +12,7 @@ pub enum TileType {
     Floor,
 }
 
-pub fn xy_idx(x: i32, y: i32) -> usize {
+pub fn xy_to_idx(x: i32, y: i32) -> usize {
     (y as usize * WIDTH) + x as usize
 }
 
@@ -20,13 +20,13 @@ pub fn new_map() -> Vec<TileType> {
     let mut map = vec![TileType::Floor; WIDTH * HEIGHT];
 
     for x in 0..(WIDTH as i32) {
-        map[xy_idx(x, 0)] = TileType::Wall;
-        map[xy_idx(x, (HEIGHT - 1) as i32)] = TileType::Wall;
+        map[xy_to_idx(x, 0)] = TileType::Wall;
+        map[xy_to_idx(x, (HEIGHT - 1) as i32)] = TileType::Wall;
     }
 
     for y in 0..(HEIGHT as i32) {
-        map[xy_idx(0, y)] = TileType::Wall;
-        map[xy_idx((WIDTH - 1) as i32, y)] = TileType::Wall;
+        map[xy_to_idx(0, y)] = TileType::Wall;
+        map[xy_to_idx((WIDTH - 1) as i32, y)] = TileType::Wall;
     }
 
     let mut rng = RandomNumberGenerator::new();
@@ -34,10 +34,10 @@ pub fn new_map() -> Vec<TileType> {
     (0..(MAP_COUNT / 8)).into_iter().for_each(|_| {
         let x = rng.roll_dice(1, (WIDTH - 1) as i32);
         let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_idx(x, y);
+        let idx = xy_to_idx(x, y);
 
-        let is_at_center = idx == xy_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_wall_already = map[xy_idx(x, y)] == TileType::Wall;
+        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
+        let is_wall_already = map[xy_to_idx(x, y)] == TileType::Wall;
         if !is_at_center && !is_wall_already {
             map[idx] = TileType::Tree;
         }
