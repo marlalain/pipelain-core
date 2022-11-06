@@ -76,7 +76,8 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
         }
 
         x += 1;
-        if x > WIDTH - 1 {
+        let should_be_next_row = x > WIDTH - 1;
+        if should_be_next_row {
             x = 0;
             y += 1;
         }
