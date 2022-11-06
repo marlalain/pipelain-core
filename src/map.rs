@@ -37,7 +37,7 @@ pub fn new_map() -> Vec<TileType> {
         let idx = xy_to_idx(x, y);
 
         let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_wall_already = map[xy_to_idx(x, y)] == TileType::Wall;
+        let is_wall_already = map[idx] == TileType::Wall;
         if !is_at_center && !is_wall_already {
             map[idx] = TileType::Tree;
         }
@@ -82,4 +82,11 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
             y += 1;
         }
     })
+}
+
+pub fn is_tile_walkable(tt: TileType) -> bool {
+    match tt {
+        TileType::Wall | TileType::Tree => false,
+        _ => true,
+    }
 }

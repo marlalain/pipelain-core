@@ -1,4 +1,4 @@
-use crate::map::{xy_to_idx, TileType};
+use crate::map::{is_tile_walkable, xy_to_idx, TileType};
 use crate::{BTerm, DenseVecStorage, Position, State, VirtualKeyCode, World};
 use specs::Component;
 use specs::{Join, WorldExt};
@@ -16,7 +16,7 @@ fn try_move_player(delta_x: i32, delta_y: i32, world: &mut World) {
     for (_player, pos) in (&mut players, &mut positions).join() {
         let destination_idx = xy_to_idx(pos.x + delta_x, pos.y + delta_y);
 
-        if map[destination_idx] == TileType::Floor {
+        if is_tile_walkable(map[destination_idx]) {
             pos.x = min(79, max(0, pos.x + delta_x));
             pos.y = min(49, max(0, pos.y + delta_y));
         }
