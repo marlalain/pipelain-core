@@ -27,10 +27,10 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
     match ctx.key {
         None => {}
         Some(key) => match key {
-            VirtualKeyCode::H => try_move_player(-1, 0, &mut state.world),
-            VirtualKeyCode::L => try_move_player(1, 0, &mut state.world),
-            VirtualKeyCode::K => try_move_player(0, -1, &mut state.world),
-            VirtualKeyCode::J => try_move_player(0, 1, &mut state.world),
+            VirtualKeyCode::H | VirtualKeyCode::Left => try_move_player(-1, 0, &mut state.world),
+            VirtualKeyCode::L | VirtualKeyCode::Right => try_move_player(1, 0, &mut state.world),
+            VirtualKeyCode::K | VirtualKeyCode::Up => try_move_player(0, -1, &mut state.world),
+            VirtualKeyCode::J | VirtualKeyCode::Down => try_move_player(0, 1, &mut state.world),
             VirtualKeyCode::Q => ctx.quit(),
             _ => {}
         },
