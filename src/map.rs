@@ -7,6 +7,7 @@ const MAP_COUNT: usize = HEIGHT * WIDTH;
 
 #[derive(PartialEq, Copy, Clone)]
 pub enum TileType {
+    Tree,
     Wall,
     Floor,
 }
@@ -30,13 +31,15 @@ pub fn new_map() -> Vec<TileType> {
 
     let mut rng = RandomNumberGenerator::new();
 
-    (0..(WIDTH * HEIGHT)).into_iter().for_each(|_| {
+    (0..(MAP_COUNT / 8)).into_iter().for_each(|_| {
         let x = rng.roll_dice(1, (WIDTH - 1) as i32);
         let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
         let idx = xy_idx(x, y);
 
-        if idx != xy_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32) {
-            map[idx] = TileType::Wall;
+        let is_at_center = idx == xy_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
+        let is_wall_already = map[xy_idx(x, y)] == TileType::Wall;
+        if !is_at_center && !is_wall_already {
+            map[idx] = TileType::Tree;
         }
     });
 
@@ -59,9 +62,16 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
             TileType::Wall => ctx.set(
                 x,
                 y,
-                RGB::from_f32(0., 1., 0.),
+                RGB::from_f32(0.5, 0.5, 0.),
                 RGB::from_f32(0., 0., 0.),
                 to_cp437('#'),
+            ),
+            TileType::Tree => ctx.set(
+                x,
+                y,
+                RGB::from_f32(0., 1., 0.),
+                RGB::from_f32(0., 0., 0.),
+                to_cp437('♠'),
             ),
         }
 
