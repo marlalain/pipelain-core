@@ -4,6 +4,7 @@ mod map;
 mod player;
 mod state;
 
+use crate::gui::UserInterfaceState;
 use crate::logs::Log;
 use crate::map::new_map;
 use crate::player::player_input;
@@ -44,8 +45,12 @@ fn main() -> BError {
 
     state.world.insert(new_map());
     state.world.insert(Log {
-        entries: vec!["the game has fully loaded".to_string()],
+        entries: vec![
+            "the game has fully loaded".to_string(),
+            "press the apostrophe/grave key to show/hide the logs".to_string(),
+        ],
     });
+    state.world.insert(UserInterfaceState { log: true });
 
     let _player = state
         .world

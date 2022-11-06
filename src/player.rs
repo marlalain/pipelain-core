@@ -1,9 +1,10 @@
 use crate::map::{is_tile_walkable, xy_to_idx, TileType};
-use crate::{BTerm, DenseVecStorage, Position, State, VirtualKeyCode, World};
+use crate::{BTerm, DenseVecStorage, Position, State, UserInterfaceState, VirtualKeyCode, World};
 use specs::Component;
 use specs::{Join, WorldExt};
 use specs_derive::Component;
 use std::cmp::{max, min};
+use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Up, B, H, J, K, L, N, U, Y};
 
 #[derive(Component, Debug)]
 pub struct Player {}
@@ -27,14 +28,18 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
     match ctx.key {
         None => {}
         Some(key) => match key {
-            VirtualKeyCode::H | VirtualKeyCode::Left => try_move_player(-1, 0, &mut state.world),
-            VirtualKeyCode::L | VirtualKeyCode::Right => try_move_player(1, 0, &mut state.world),
-            VirtualKeyCode::K | VirtualKeyCode::Up => try_move_player(0, -1, &mut state.world),
-            VirtualKeyCode::J | VirtualKeyCode::Down => try_move_player(0, 1, &mut state.world),
-            VirtualKeyCode::Y => try_move_player(-1, -1, &mut state.world),
-            VirtualKeyCode::U => try_move_player(1, -1, &mut state.world),
-            VirtualKeyCode::B => try_move_player(-1, 1, &mut state.world),
-            VirtualKeyCode::N => try_move_player(1, 1, &mut state.world),
+            H | Left => try_move_player(-1, 0, &mut state.world),
+            L | Right => try_move_player(1, 0, &mut state.world),
+            K | Up => try_move_player(0, -1, &mut state.world),
+            J | Down => try_move_player(0, 1, &mut state.world),
+            Y => try_move_player(-1, -1, &mut state.world),
+            U => try_move_player(1, -1, &mut state.world),
+            B => try_move_player(-1, 1, &mut state.world),
+            N => try_move_player(1, 1, &mut state.world),
+            Apostrophe | Grave => {
+                let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+                ui.log = !ui.log
+            }
             VirtualKeyCode::Q => ctx.quit(),
             _ => {}
         },
