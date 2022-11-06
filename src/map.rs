@@ -1,6 +1,10 @@
 use crate::{to_cp437, BTerm, RGB};
 use bracket_lib::random::RandomNumberGenerator;
 
+const WIDTH: usize = 80;
+const HEIGHT: usize = 50;
+const MAP_COUNT: usize = HEIGHT * WIDTH;
+
 #[derive(PartialEq, Copy, Clone)]
 pub enum TileType {
     Wall,
@@ -8,30 +12,30 @@ pub enum TileType {
 }
 
 pub fn xy_idx(x: i32, y: i32) -> usize {
-    (y as usize * 80) + x as usize
+    (y as usize * WIDTH) + x as usize
 }
 
 pub fn new_map() -> Vec<TileType> {
-    let mut map = vec![TileType::Floor; 80 * 50];
+    let mut map = vec![TileType::Floor; WIDTH * HEIGHT];
 
-    for x in 0..80 {
+    for x in 0..(WIDTH as i32) {
         map[xy_idx(x, 0)] = TileType::Wall;
-        map[xy_idx(x, 49)] = TileType::Wall;
+        map[xy_idx(x, (HEIGHT - 1) as i32)] = TileType::Wall;
     }
 
-    for y in 0..50 {
+    for y in 0..(HEIGHT as i32) {
         map[xy_idx(0, y)] = TileType::Wall;
-        map[xy_idx(79, y)] = TileType::Wall;
+        map[xy_idx((WIDTH - 1) as i32, y)] = TileType::Wall;
     }
 
     let mut rng = RandomNumberGenerator::new();
 
-    (0..400).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, 79);
-        let y = rng.roll_dice(1, 49);
+    (0..(WIDTH * HEIGHT)).into_iter().for_each(|_| {
+        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
+        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
         let idx = xy_idx(x, y);
 
-        if idx != xy_idx(40, 25) {
+        if idx != xy_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32) {
             map[idx] = TileType::Wall;
         }
     });
@@ -62,7 +66,7 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
         }
 
         x += 1;
-        if x > 79 {
+        if x > WIDTH - 1 {
             x = 0;
             y += 1;
         }
