@@ -3,11 +3,12 @@ use std::cmp::{max, min};
 use specs::Component;
 use specs::{Join, WorldExt};
 use specs_derive::Component;
-use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Tab, Up, B, H, J, K, L, N, O, U, Y};
+use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Tab, Up, B, H, I, J, K, L, N, O, U, Y};
 
 use crate::map::{is_tile_walkable, xy_to_idx, TileType};
 use crate::{
-    BTerm, DenseVecStorage, Log, Position, State, UserInterfaceState, VirtualKeyCode, World,
+    BTerm, DenseVecStorage, Log, MenuMode, Position, State, UserInterfaceState, VirtualKeyCode,
+    World,
 };
 
 #[derive(Component, Debug)]
@@ -48,8 +49,14 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
                 let mut ui = state.world.fetch_mut::<UserInterfaceState>();
                 ui.menu = !ui.menu
             }
-            O => {
-                Log::info(&state.world, "there are no options yet");
+            O => Log::info(&state.world, "there are no options yet"),
+            I => {
+                let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                match ui.mode {
+                    MenuMode::Interact => ui.mode = MenuMode::Default,
+                    _ => ui.mode = MenuMode::Interact,
+                }
             }
             VirtualKeyCode::Q => ctx.quit(),
             _ => {}

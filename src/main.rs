@@ -7,7 +7,7 @@ use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
 use specs_derive::Component;
 
-use crate::gui::UserInterfaceState;
+use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
 use crate::player::player_input;
@@ -21,20 +21,23 @@ mod player;
 mod state;
 
 #[derive(Component)]
-struct Position {
+pub struct Position {
     x: i32,
     y: i32,
 }
 
 #[derive(Component)]
-struct Renderable {
+pub struct Renderable {
     glyph: FontCharType,
     fg: RGB,
     bg: RGB,
 }
 
 fn main() -> BError {
-    let context = BTermBuilder::simple80x50().with_title("PipeLain").build()?;
+    let context = BTermBuilder::simple80x50()
+        .with_title("PipeLain")
+        .with_dimensions(160, 100)
+        .build()?;
 
     let mut state = State {
         world: World::new(),
@@ -55,6 +58,7 @@ fn main() -> BError {
     state.world.insert(UserInterfaceState {
         log: true,
         menu: true,
+        mode: MenuMode::Default,
     });
 
     let _player = state

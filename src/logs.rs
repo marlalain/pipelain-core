@@ -5,19 +5,15 @@ pub struct Log {
 }
 
 impl Log {
-    pub fn info(world: &World, message: &str) {
-        Log::_info(world, message.to_string())
-    }
-
-    fn _info(world: &World, message: String) {
+    pub fn info<T: ToString>(world: &World, message: T) {
         let mut log = world.fetch_mut::<Log>();
         let last_log = log
             .entries
             .get(log.entries.len() - 1)
             .expect("out of bounds");
 
-        if last_log != &message {
-            log.entries.push(message)
+        if last_log != &message.to_string() {
+            log.entries.push(message.to_string())
         }
     }
 }

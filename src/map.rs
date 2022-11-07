@@ -1,5 +1,6 @@
-use crate::{to_cp437, BTerm, RGB};
 use bracket_lib::random::RandomNumberGenerator;
+
+use crate::{to_cp437, BTerm, RGB};
 
 pub const WIDTH: usize = 80;
 pub const HEIGHT: usize = 50;

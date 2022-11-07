@@ -3,11 +3,17 @@ use bracket_lib::color::{GREEN, RGB, WHITE};
 use crate::map::WIDTH;
 use crate::{BTerm, Log, World, BLACK};
 
-mod menu;
+pub mod menu;
+
+pub enum MenuMode {
+    Default,
+    Interact,
+}
 
 pub struct UserInterfaceState {
     pub log: bool,
     pub menu: bool,
+    pub mode: MenuMode,
 }
 
 pub fn draw_log(world: &World, ctx: &mut BTerm) {
