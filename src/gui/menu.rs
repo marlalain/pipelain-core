@@ -79,12 +79,7 @@ fn show_interact(world: &World, ctx: &mut BTerm, x: i32, y: i32) {
             let tile = map[xy_to_idx(offset_x, offset_y)];
 
             match tile {
-                TileType::Tree => ctx.set(offset_x, offset_y, red, black, to_cp437('♣')),
-                TileType::Wall => ctx.set(offset_x, offset_y, red, black, to_cp437('#')),
-                TileType::Floor => ctx.set(offset_x, offset_y, red, black, to_cp437('.')),
-                TileType::Bush => ctx.set(offset_x, offset_y, red, black, to_cp437('%')),
-                TileType::WoodenStick => ctx.set(offset_x, offset_y, red, black, to_cp437('\\')),
-                TileType::Rose => ctx.set(offset_x, offset_y, red, black, to_cp437('±')),
+                t => t.render_custom(ctx, offset_x, offset_y, red, black),
             }
         })
     });
@@ -98,6 +93,7 @@ fn show_options(ctx: &mut BTerm, x: i32, y: i32) {
         options: vec![
             option("d", "build"),
             option("i", "interact"),
+            option("c", "craft"),
             option("o", "options"),
         ],
     };
