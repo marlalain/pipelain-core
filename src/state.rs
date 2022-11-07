@@ -2,9 +2,10 @@ use specs::{Join, RunNow, WorldExt};
 
 use gui::draw_log;
 
+use crate::components::items::WantsToPickupItem;
 use crate::gui::menu::draw_menu;
 use crate::map::{draw_map, TileType};
-use crate::systems::interaction::Interactable;
+use crate::systems::pickup::PickupSystem;
 use crate::{gui, player_input, BTerm, GameState, Name, Player, Position, Renderable, World};
 
 pub struct State {
@@ -13,8 +14,8 @@ pub struct State {
 
 impl State {
     fn run_systems(&mut self) {
-        let mut interaction = Interactable {};
-        interaction.run_now(&self.world);
+        let mut pickup = PickupSystem {};
+        pickup.run_now(&self.world);
 
         self.world.maintain();
     }

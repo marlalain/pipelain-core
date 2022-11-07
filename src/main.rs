@@ -1,14 +1,16 @@
+use std::fmt::{Display, Formatter};
+
 use bracket_lib::color::{BLACK, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
 };
 use bracket_lib::random::RandomNumberGenerator;
-use specs::Component;
 use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
+use specs::{Component, Entity};
 use specs_derive::Component;
 
-use crate::components::items::{Bush, Flint, Item, WoodenStick};
+use crate::components::items::{Bush, Flint, InBackpack, Item, WantsToPickupItem, WoodenStick};
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
@@ -16,6 +18,7 @@ use crate::player::player_input;
 use crate::player::Player;
 use crate::spawner::{generate_items, player};
 use crate::state::State;
+use crate::systems::pickup::PickupSystem;
 
 mod components;
 mod gui;
@@ -39,9 +42,15 @@ pub struct Renderable {
     bg: RGB,
 }
 
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct Name {
     name: String,
+}
+
+impl Display for Name {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.name.as_str())
+    }
 }
 
 fn main() -> BError {
@@ -59,9 +68,13 @@ fn main() -> BError {
     state.world.register::<Player>();
     state.world.register::<Name>();
     state.world.register::<Item>();
+
     state.world.register::<Flint>();
     state.world.register::<Bush>();
     state.world.register::<WoodenStick>();
+
+    state.world.register::<WantsToPickupItem>();
+    state.world.register::<InBackpack>();
 
     state.world.insert(new_map());
     state.world.insert(Log {
@@ -77,8 +90,10 @@ fn main() -> BError {
         mode: MenuMode::Default,
     });
 
-    player(&mut state.world, 40, 25);
+    let player = player(&mut state.world, 40, 25);
     generate_items(&mut state.world);
+
+    state.world.insert(player);
 
     main_loop(context, state)
 }

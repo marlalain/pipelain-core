@@ -1,8 +1,59 @@
-use crate::Component;
-use crate::DenseVecStorage;
+use specs::{Entity, Join, WorldExt};
 
-#[derive(Component)]
+use crate::{Component, Player, Position, World};
+use crate::{DenseVecStorage, Log};
+
+#[derive(Component, Debug)]
 pub struct Item {}
+
+pub fn get_item(world: &mut World) {
+    let players = world.write_storage::<Player>();
+    let positions = world.write_storage::<Position>();
+    let (mut player_x, mut player_y) = (0, 0);
+
+    for (_player, position) in (&players, &positions).join() {
+        (player_x, player_y) = (position.x, position.y);
+    }
+
+    let player = world.fetch::<Entity>();
+    let entities = world.entities();
+    let items = world.read_storage::<Item>();
+    let mut log = world.fetch_mut::<Log>();
+
+    let mut target: Option<Entity> = None;
+    for (item, _, position) in (&entities, &items, &positions).join() {
+        if position.x == player_x && position.y == player_y {
+            target = Some(item);
+        }
+    }
+
+    match target {
+        None => log.log("there is nothing to be picked up here"),
+        Some(item) => {
+            let mut pickup = world.write_storage::<WantsToPickupItem>();
+            pickup
+                .insert(
+                    *player,
+                    WantsToPickupItem {
+                        collected_by: *player,
+                        item,
+                    },
+                )
+                .expect("could not use pickup system");
+        }
+    }
+}
+
+#[derive(Component, Debug)]
+pub struct InBackpack {
+    pub owner: Entity,
+}
+
+#[derive(Component, Debug, Clone)]
+pub struct WantsToPickupItem {
+    pub collected_by: Entity,
+    pub item: Entity,
+}
 
 #[derive(Component)]
 pub struct Flint {}

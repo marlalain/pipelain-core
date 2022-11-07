@@ -3,8 +3,11 @@ use std::cmp::{max, min};
 use specs::Component;
 use specs::{Join, WorldExt};
 use specs_derive::Component;
-use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Tab, Up, B, H, I, J, K, L, N, O, U, Y};
+use VirtualKeyCode::{
+    Apostrophe, Comma, Down, Grave, Left, Right, Tab, Up, B, H, I, J, K, L, N, O, U, Y,
+};
 
+use crate::components::items::get_item;
 use crate::map::{is_tile_walkable, xy_to_idx, TileType};
 use crate::{
     BTerm, DenseVecStorage, Log, MenuMode, Position, State, UserInterfaceState, VirtualKeyCode,
@@ -41,6 +44,7 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
             U => try_move_player(1, -1, &mut state.world),
             B => try_move_player(-1, 1, &mut state.world),
             N => try_move_player(1, 1, &mut state.world),
+            Comma => get_item(&mut state.world),
             Apostrophe | Grave => {
                 let mut ui = state.world.fetch_mut::<UserInterfaceState>();
                 ui.log = !ui.log
@@ -49,7 +53,7 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
                 let mut ui = state.world.fetch_mut::<UserInterfaceState>();
                 ui.menu = !ui.menu
             }
-            O => Log::info(&state.world, "there are no options yet"),
+            O => Log::by_world(&state.world, "there are no options yet"),
             I => {
                 let mut ui = state.world.fetch_mut::<UserInterfaceState>();
 
