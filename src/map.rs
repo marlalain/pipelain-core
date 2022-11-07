@@ -1,6 +1,7 @@
 use bracket_lib::color::{BROWN1, BROWN2, BURLYWOOD, GREY, RED};
 use bracket_lib::random::RandomNumberGenerator;
 
+use crate::spawner::generate_items;
 use crate::{to_cp437, BTerm, BLACK, RGB};
 
 pub const WIDTH: usize = 80;
@@ -15,7 +16,6 @@ pub enum TileType {
     Bush,
     WoodenStick,
     Rose,
-    Flint,
 }
 
 impl TileType {
@@ -27,7 +27,6 @@ impl TileType {
             TileType::Bush => ctx.set(x, y, fg, bg, to_cp437('%')),
             TileType::WoodenStick => ctx.set(x, y, fg, bg, to_cp437('\\')),
             TileType::Rose => ctx.set(x, y, fg, bg, to_cp437('±')),
-            TileType::Flint => ctx.set(x, y, fg, bg, to_cp437('°')),
         }
     }
 
@@ -53,7 +52,6 @@ impl TileType {
                 self.render_custom(ctx, x, y, RGB::named(BURLYWOOD), RGB::named(BLACK))
             }
             TileType::Rose => self.render_custom(ctx, x, y, RGB::named(RED), RGB::named(BLACK)),
-            TileType::Flint => self.render_custom(ctx, x, y, RGB::named(GREY), RGB::named(BLACK)),
         }
     }
 }
@@ -123,18 +121,6 @@ pub fn new_map() -> Vec<TileType> {
         let is_something_already = map[idx] != TileType::Floor;
         if !is_at_center && !is_something_already {
             map[idx] = TileType::Rose;
-        }
-    });
-
-    (0..(MAP_COUNT / 128)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_to_idx(x, y);
-
-        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_something_already = map[idx] != TileType::Floor;
-        if !is_at_center && !is_something_already {
-            map[idx] = TileType::Flint;
         }
     });
 

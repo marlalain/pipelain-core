@@ -2,22 +2,27 @@ use bracket_lib::color::{BLACK, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
 };
+use bracket_lib::random::RandomNumberGenerator;
 use specs::Component;
 use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
 use specs_derive::Component;
 
+use crate::components::items::{Flint, Item};
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
 use crate::player::player_input;
 use crate::player::Player;
+use crate::spawner::generate_items;
 use crate::state::State;
 
+mod components;
 mod gui;
 mod logs;
 mod map;
 mod player;
+mod spawner;
 mod state;
 mod systems;
 
@@ -47,8 +52,11 @@ fn main() -> BError {
     state.world.register::<Position>();
     state.world.register::<Renderable>();
     state.world.register::<Player>();
+    state.world.register::<Item>();
+    state.world.register::<Flint>();
 
     state.world.insert(new_map());
+    generate_items(&mut state.world);
     state.world.insert(Log {
         entries: vec![
             "the game has fully loaded".to_string(),
