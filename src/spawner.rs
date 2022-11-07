@@ -59,7 +59,9 @@ fn flint(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::named(GREY),
             bg: RGB::named(BLACK),
         })
-        .with(Item {})
+        .with(Item {
+            can_be_picked: true,
+        })
         .with(Flint {})
         .with(Name {
             name: "Flint".to_string(),
@@ -76,7 +78,9 @@ fn bush(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::from_f32(0., 0.75, 0.),
             bg: RGB::named(BLACK),
         })
-        .with(Item {})
+        .with(Item {
+            can_be_picked: false,
+        })
         .with(Bush {})
         .with(Name {
             name: "Bush".to_string(),
@@ -93,7 +97,9 @@ fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::named(BURLYWOOD),
             bg: RGB::named(BLACK),
         })
-        .with(Item {})
+        .with(Item {
+            can_be_picked: true,
+        })
         .with(WoodenStick {})
         .with(Name {
             name: "Wooden Stick".to_string(),

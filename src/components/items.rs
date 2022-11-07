@@ -4,7 +4,9 @@ use crate::{Component, Player, Position, World};
 use crate::{DenseVecStorage, Log};
 
 #[derive(Component, Debug)]
-pub struct Item {}
+pub struct Item {
+    pub can_be_picked: bool,
+}
 
 pub fn get_item(world: &mut World) {
     let players = world.write_storage::<Player>();
@@ -21,9 +23,13 @@ pub fn get_item(world: &mut World) {
     let mut log = world.fetch_mut::<Log>();
 
     let mut target: Option<Entity> = None;
-    for (item, _, position) in (&entities, &items, &positions).join() {
+    for (item_entity, item, position) in (&entities, &items, &positions).join() {
+        if !item.can_be_picked {
+            continue;
+        }
+
         if position.x == player_x && position.y == player_y {
-            target = Some(item);
+            target = Some(item_entity);
         }
     }
 
