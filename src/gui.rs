@@ -1,12 +1,8 @@
 use bracket_lib::color::{GREEN, RGB, WHITE};
-use specs::Component;
-use specs::DenseVecStorage;
-use specs_derive::Component;
 
 use crate::map::WIDTH;
 use crate::{BTerm, Log, World, BLACK};
 
-#[derive(Component)]
 pub struct UserInterfaceState {
     pub log: bool,
     pub menu: bool,
@@ -69,7 +65,11 @@ pub fn draw_menu(world: &World, ctx: &mut BTerm) {
 
 fn show_options(ctx: &mut BTerm, x: i32, y: i32) {
     let menu = Menu {
-        options: vec![option("d", "build")],
+        options: vec![
+            option("d", "build"),
+            option("i", "interact"),
+            option("o", "options"),
+        ],
     };
 
     (0..menu.options.len()).into_iter().for_each(|i| {
