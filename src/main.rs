@@ -19,6 +19,7 @@ mod logs;
 mod map;
 mod player;
 mod state;
+mod systems;
 
 #[derive(Component)]
 pub struct Position {

@@ -1,3 +1,4 @@
+use bracket_lib::color::{BROWN1, BROWN2, BURLYWOOD, RED};
 use bracket_lib::random::RandomNumberGenerator;
 
 use crate::{to_cp437, BTerm, RGB};
@@ -11,6 +12,9 @@ pub enum TileType {
     Tree,
     Wall,
     Floor,
+    Bush,
+    WoodenStick,
+    Rose,
 }
 
 pub fn xy_to_idx(x: i32, y: i32) -> usize {
@@ -38,9 +42,46 @@ pub fn new_map() -> Vec<TileType> {
         let idx = xy_to_idx(x, y);
 
         let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_wall_already = map[idx] == TileType::Wall;
-        if !is_at_center && !is_wall_already {
+        let is_something_already = map[idx] != TileType::Floor;
+        if !is_at_center && !is_something_already {
             map[idx] = TileType::Tree;
+        }
+    });
+
+    // TODO: Refactor below
+    (0..(MAP_COUNT / 16)).into_iter().for_each(|_| {
+        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
+        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
+        let idx = xy_to_idx(x, y);
+
+        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
+        let is_something_already = map[idx] != TileType::Floor;
+        if !is_at_center && !is_something_already {
+            map[idx] = TileType::Bush;
+        }
+    });
+
+    (0..(MAP_COUNT / 32)).into_iter().for_each(|_| {
+        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
+        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
+        let idx = xy_to_idx(x, y);
+
+        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
+        let is_something_already = map[idx] != TileType::Floor;
+        if !is_at_center && !is_something_already {
+            map[idx] = TileType::WoodenStick;
+        }
+    });
+
+    (0..(MAP_COUNT / 64)).into_iter().for_each(|_| {
+        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
+        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
+        let idx = xy_to_idx(x, y);
+
+        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
+        let is_something_already = map[idx] != TileType::Floor;
+        if !is_at_center && !is_something_already {
+            map[idx] = TileType::Rose;
         }
     });
 
@@ -63,7 +104,7 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
             TileType::Wall => ctx.set(
                 x,
                 y,
-                RGB::from_f32(0.5, 0.5, 0.),
+                RGB::from_f32(0.25, 0.25, 0.25),
                 RGB::from_f32(0., 0., 0.),
                 to_cp437('#'),
             ),
@@ -72,7 +113,28 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
                 y,
                 RGB::from_f32(0., 1., 0.),
                 RGB::from_f32(0., 0., 0.),
-                to_cp437('♠'),
+                to_cp437('♣'),
+            ),
+            TileType::Bush => ctx.set(
+                x,
+                y,
+                RGB::from_f32(0., 0.75, 0.),
+                RGB::from_f32(0., 0., 0.),
+                to_cp437('%'),
+            ),
+            TileType::WoodenStick => ctx.set(
+                x,
+                y,
+                RGB::named(BURLYWOOD),
+                RGB::from_f32(0., 0., 0.),
+                to_cp437('\\'),
+            ),
+            TileType::Rose => ctx.set(
+                x,
+                y,
+                RGB::named(RED),
+                RGB::from_f32(0., 0., 0.),
+                to_cp437('±'),
             ),
         }
 
