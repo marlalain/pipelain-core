@@ -52,40 +52,39 @@ fn show_interact(world: &World, ctx: &mut BTerm, x: i32, y: i32) {
         name: String,
     };
 
-    let map = world.fetch::<Vec<TileType>>();
-    let mut players = world.write_storage::<Player>();
-    let mut positions = world.write_storage::<Position>();
+    {
+        let map = world.fetch::<Vec<TileType>>();
+        let mut players = world.write_storage::<Player>();
+        let mut positions = world.write_storage::<Position>();
 
-    let (mut player_x, mut player_y) = (0, 0);
-    for (_player, position) in (&players, &positions).join() {
-        player_x = position.x;
-        player_y = position.y;
+        let (mut player_x, mut player_y) = (0, 0);
+        for (_player, position) in (&players, &positions).join() {
+            player_x = position.x;
+            player_y = position.y;
+        }
+
+        (0..3).into_iter().for_each(|raw_offset_x| {
+            let offset_x = raw_offset_x - 1 + &player_x;
+            (0..3).into_iter().for_each(|raw_offset_y| {
+                let offset_y = raw_offset_y - 1 + &player_y;
+
+                if &offset_x == &player_x && &offset_y == &player_y {
+                    return;
+                }
+
+                let red = RGB::named(RED);
+                let black = RGB::named(BLACK);
+                let tile = map[xy_to_idx(offset_x, offset_y)];
+
+                match tile {
+                    t => t.render_custom(ctx, offset_x, offset_y, red, black),
+                }
+            })
+        });
+
+        ctx.print(x, y, "no objects to");
+        ctx.print(x, y + 1, "interact here")
     }
-
-    drop(players);
-    drop(positions);
-
-    (0..3).into_iter().for_each(|raw_offset_x| {
-        let offset_x = raw_offset_x - 1 + &player_x;
-        (0..3).into_iter().for_each(|raw_offset_y| {
-            let offset_y = raw_offset_y - 1 + &player_y;
-
-            if &offset_x == &player_x && &offset_y == &player_y {
-                return;
-            }
-
-            let red = RGB::named(RED);
-            let black = RGB::named(BLACK);
-            let tile = map[xy_to_idx(offset_x, offset_y)];
-
-            match tile {
-                t => t.render_custom(ctx, offset_x, offset_y, red, black),
-            }
-        })
-    });
-
-    ctx.print(x, y, "no objects to");
-    ctx.print(x, y + 1, "interact here")
 }
 
 fn show_options(ctx: &mut BTerm, x: i32, y: i32) {

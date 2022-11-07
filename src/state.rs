@@ -30,26 +30,24 @@ impl GameState for State {
         let map = self.world.fetch::<Vec<TileType>>();
         draw_map(&map, ctx);
 
-        let names = self.world.read_storage::<Name>();
-        let players = self.world.read_storage::<Player>();
-        let positions = self.world.read_storage::<Position>();
-        let renderables = self.world.read_storage::<Renderable>();
+        {
+            let names = self.world.read_storage::<Name>();
+            let players = self.world.read_storage::<Player>();
+            let positions = self.world.read_storage::<Position>();
+            let renderables = self.world.read_storage::<Renderable>();
 
-        for (pos, render, name) in (&positions, &renderables, &names).join() {
-            if name.name == "Player".to_string() {
-                continue;
+            for (pos, render, name) in (&positions, &renderables, &names).join() {
+                if name.name == "Player".to_string() {
+                    continue;
+                }
+
+                ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
             }
 
-            ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
+            for (pos, render, _player) in (&positions, &renderables, &players).join() {
+                ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
+            }
         }
-
-        for (pos, render, _player) in (&positions, &renderables, &players).join() {
-            ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
-        }
-
-        drop(players);
-        drop(positions);
-        drop(renderables);
 
         draw_log(&self.world, ctx);
         draw_menu(&self.world, ctx);
