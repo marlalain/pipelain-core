@@ -8,13 +8,13 @@ use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
 use specs_derive::Component;
 
-use crate::components::items::{Flint, Item};
+use crate::components::items::{Bush, Flint, Item, WoodenStick};
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
 use crate::player::player_input;
 use crate::player::Player;
-use crate::spawner::generate_items;
+use crate::spawner::{generate_items, player};
 use crate::state::State;
 
 mod components;
@@ -39,6 +39,11 @@ pub struct Renderable {
     bg: RGB,
 }
 
+#[derive(Component)]
+pub struct Name {
+    name: String,
+}
+
 fn main() -> BError {
     let context = BTermBuilder::simple80x50()
         .with_title("PipeLain")
@@ -52,11 +57,13 @@ fn main() -> BError {
     state.world.register::<Position>();
     state.world.register::<Renderable>();
     state.world.register::<Player>();
+    state.world.register::<Name>();
     state.world.register::<Item>();
     state.world.register::<Flint>();
+    state.world.register::<Bush>();
+    state.world.register::<WoodenStick>();
 
     state.world.insert(new_map());
-    generate_items(&mut state.world);
     state.world.insert(Log {
         entries: vec![
             "the game has fully loaded".to_string(),
@@ -70,17 +77,8 @@ fn main() -> BError {
         mode: MenuMode::Default,
     });
 
-    let _player = state
-        .world
-        .create_entity()
-        .with(Position { x: 40, y: 25 })
-        .with(Renderable {
-            glyph: to_cp437('@'),
-            fg: RGB::named(YELLOW),
-            bg: RGB::named(BLACK),
-        })
-        .with(Player {})
-        .build();
+    player(&mut state.world, 40, 25);
+    generate_items(&mut state.world);
 
     main_loop(context, state)
 }

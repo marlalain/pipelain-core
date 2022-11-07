@@ -1,10 +1,13 @@
-use bracket_lib::color::GREY;
+use bracket_lib::color::{BURLYWOOD, GREY};
 use specs::{Builder, Entity, WorldExt, WriteStorage};
 
 use crate::components::items;
 use crate::components::items::{Flint, Item};
 use crate::map::{xy_to_idx, TileType, HEIGHT, MAP_COUNT, WIDTH};
-use crate::{to_cp437, Position, RandomNumberGenerator, Renderable, World, BLACK, RGB, YELLOW};
+use crate::{
+    to_cp437, Bush, Name, Player, Position, RandomNumberGenerator, Renderable, WoodenStick, World,
+    BLACK, RGB, YELLOW,
+};
 
 pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
     world
@@ -15,10 +18,16 @@ pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::named(YELLOW),
             bg: RGB::named(BLACK),
         })
+        .with(Player {})
+        .with(Name {
+            name: "Player".to_string(),
+        })
         .build()
 }
 
 pub fn generate_items(world: &mut World) {
+    generate_item(world, 32, bush);
+    generate_item(world, 64, wooden_stick);
     generate_item(world, 128, flint);
 }
 
@@ -52,5 +61,42 @@ fn flint(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .with(Item {})
         .with(Flint {})
+        .with(Name {
+            name: "Flint".to_string(),
+        })
+        .build()
+}
+
+fn bush(world: &mut World, x: i32, y: i32) -> Entity {
+    world
+        .create_entity()
+        .with(Position { x, y })
+        .with(Renderable {
+            glyph: to_cp437('%'),
+            fg: RGB::from_f32(0., 0.75, 0.),
+            bg: RGB::named(BLACK),
+        })
+        .with(Item {})
+        .with(Bush {})
+        .with(Name {
+            name: "Bush".to_string(),
+        })
+        .build()
+}
+
+fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
+    world
+        .create_entity()
+        .with(Position { x, y })
+        .with(Renderable {
+            glyph: to_cp437('\\'),
+            fg: RGB::named(BURLYWOOD),
+            bg: RGB::named(BLACK),
+        })
+        .with(Item {})
+        .with(WoodenStick {})
+        .with(Name {
+            name: "Wooden Stick".to_string(),
+        })
         .build()
 }

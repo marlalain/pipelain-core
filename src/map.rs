@@ -87,31 +87,6 @@ pub fn new_map() -> Vec<TileType> {
         }
     });
 
-    // TODO: Refactor below
-    (0..(MAP_COUNT / 16)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_to_idx(x, y);
-
-        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_something_already = map[idx] != TileType::Floor;
-        if !is_at_center && !is_something_already {
-            map[idx] = TileType::Bush;
-        }
-    });
-
-    (0..(MAP_COUNT / 32)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_to_idx(x, y);
-
-        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_something_already = map[idx] != TileType::Floor;
-        if !is_at_center && !is_something_already {
-            map[idx] = TileType::WoodenStick;
-        }
-    });
-
     (0..(MAP_COUNT / 64)).into_iter().for_each(|_| {
         let x = rng.roll_dice(1, (WIDTH - 1) as i32);
         let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
