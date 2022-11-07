@@ -1,10 +1,12 @@
-use crate::map::{is_tile_walkable, xy_to_idx, TileType};
-use crate::{BTerm, DenseVecStorage, Position, State, UserInterfaceState, VirtualKeyCode, World};
+use std::cmp::{max, min};
+
 use specs::Component;
 use specs::{Join, WorldExt};
 use specs_derive::Component;
-use std::cmp::{max, min};
-use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Up, B, H, J, K, L, N, U, Y};
+use VirtualKeyCode::{Apostrophe, Down, Grave, Left, Right, Tab, Up, B, H, J, K, L, N, U, Y};
+
+use crate::map::{is_tile_walkable, xy_to_idx, TileType};
+use crate::{BTerm, DenseVecStorage, Position, State, UserInterfaceState, VirtualKeyCode, World};
 
 #[derive(Component, Debug)]
 pub struct Player {}
@@ -39,6 +41,10 @@ pub fn player_input(state: &mut State, ctx: &mut BTerm) {
             Apostrophe | Grave => {
                 let mut ui = state.world.fetch_mut::<UserInterfaceState>();
                 ui.log = !ui.log
+            }
+            Tab => {
+                let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+                ui.menu = !ui.menu
             }
             VirtualKeyCode::Q => ctx.quit(),
             _ => {}

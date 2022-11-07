@@ -1,6 +1,7 @@
+use crate::gui::draw_menu;
 use crate::map::{draw_map, TileType};
 use crate::{gui, player_input, BTerm, GameState, Position, Renderable, World};
-use gui::draw_ui;
+use gui::draw_log;
 use specs::{Join, WorldExt};
 
 pub struct State {
@@ -23,6 +24,7 @@ impl GameState for State {
             ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
         }
 
-        draw_ui(&self.world, ctx);
+        draw_log(&self.world, ctx);
+        draw_menu(&self.world, ctx);
     }
 }

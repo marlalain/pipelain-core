@@ -1,9 +1,9 @@
 use crate::{to_cp437, BTerm, RGB};
 use bracket_lib::random::RandomNumberGenerator;
 
-const WIDTH: usize = 80;
-const HEIGHT: usize = 50;
-const MAP_COUNT: usize = HEIGHT * WIDTH;
+pub const WIDTH: usize = 80;
+pub const HEIGHT: usize = 50;
+pub const MAP_COUNT: usize = HEIGHT * WIDTH;
 
 #[derive(PartialEq, Copy, Clone)]
 pub enum TileType {

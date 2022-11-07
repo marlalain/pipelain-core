@@ -1,15 +1,3 @@
-mod gui;
-mod logs;
-mod map;
-mod player;
-mod state;
-
-use crate::gui::UserInterfaceState;
-use crate::logs::Log;
-use crate::map::new_map;
-use crate::player::player_input;
-use crate::player::Player;
-use crate::state::State;
 use bracket_lib::color::{BLACK, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
@@ -18,6 +6,19 @@ use specs::Component;
 use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
 use specs_derive::Component;
+
+use crate::gui::UserInterfaceState;
+use crate::logs::Log;
+use crate::map::new_map;
+use crate::player::player_input;
+use crate::player::Player;
+use crate::state::State;
+
+mod gui;
+mod logs;
+mod map;
+mod player;
+mod state;
 
 #[derive(Component)]
 struct Position {
@@ -48,9 +49,13 @@ fn main() -> BError {
         entries: vec![
             "the game has fully loaded".to_string(),
             "press the apostrophe/grave key to show/hide the logs".to_string(),
+            "press tab to show/hide the right side menu".to_string(),
         ],
     });
-    state.world.insert(UserInterfaceState { log: true });
+    state.world.insert(UserInterfaceState {
+        log: true,
+        menu: true,
+    });
 
     let _player = state
         .world
