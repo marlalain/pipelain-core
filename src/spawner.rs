@@ -39,8 +39,8 @@ fn generate_item(
     let mut rng = RandomNumberGenerator::new();
 
     (0..(MAP_COUNT / chances)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
+        let x = rng.roll_dice(1, (WIDTH - 2) as i32);
+        let y = rng.roll_dice(1, (HEIGHT - 2) as i32);
         let idx = xy_to_idx(x, y);
 
         let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
