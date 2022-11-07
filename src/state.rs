@@ -1,8 +1,9 @@
-use crate::gui::draw_menu;
+use specs::{Join, WorldExt};
+
+use gui::draw_log;
+
 use crate::map::{draw_map, TileType};
 use crate::{gui, player_input, BTerm, GameState, Position, Renderable, World};
-use gui::draw_log;
-use specs::{Join, WorldExt};
 
 pub struct State {
     pub world: World,
