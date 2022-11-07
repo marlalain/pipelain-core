@@ -13,9 +13,6 @@ pub enum TileType {
     Tree,
     Wall,
     Floor,
-    Bush,
-    WoodenStick,
-    Rose,
 }
 
 impl TileType {
@@ -24,9 +21,6 @@ impl TileType {
             TileType::Floor => ctx.set(x, y, fg, bg, to_cp437('.')),
             TileType::Wall => ctx.set(x, y, fg, bg, to_cp437('#')),
             TileType::Tree => ctx.set(x, y, fg, bg, to_cp437('♣')),
-            TileType::Bush => ctx.set(x, y, fg, bg, to_cp437('%')),
-            TileType::WoodenStick => ctx.set(x, y, fg, bg, to_cp437('\\')),
-            TileType::Rose => ctx.set(x, y, fg, bg, to_cp437('±')),
         }
     }
 
@@ -45,13 +39,6 @@ impl TileType {
             TileType::Tree => {
                 self.render_custom(ctx, x, y, RGB::from_f32(0., 1., 0.), RGB::named(BLACK))
             }
-            TileType::Bush => {
-                self.render_custom(ctx, x, y, RGB::from_f32(0., 0.75, 0.), RGB::named(BLACK))
-            }
-            TileType::WoodenStick => {
-                self.render_custom(ctx, x, y, RGB::named(BURLYWOOD), RGB::named(BLACK))
-            }
-            TileType::Rose => self.render_custom(ctx, x, y, RGB::named(RED), RGB::named(BLACK)),
         }
     }
 }
@@ -84,18 +71,6 @@ pub fn new_map() -> Vec<TileType> {
         let is_something_already = map[idx] != TileType::Floor;
         if !is_at_center && !is_something_already {
             map[idx] = TileType::Tree;
-        }
-    });
-
-    (0..(MAP_COUNT / 64)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_to_idx(x, y);
-
-        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_something_already = map[idx] != TileType::Floor;
-        if !is_at_center && !is_something_already {
-            map[idx] = TileType::Rose;
         }
     });
 

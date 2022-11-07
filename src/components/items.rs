@@ -69,3 +69,6 @@ pub struct Bush {}
 
 #[derive(Component)]
 pub struct WoodenStick {}
+
+#[derive(Component)]
+pub struct Rose {}

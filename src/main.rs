@@ -10,7 +10,9 @@ use specs::{Builder, World, WorldExt};
 use specs::{Component, Entity};
 use specs_derive::Component;
 
-use crate::components::items::{Bush, Flint, InBackpack, Item, WantsToPickupItem, WoodenStick};
+use crate::components::items::{
+    Bush, Flint, InBackpack, Item, Rose, WantsToPickupItem, WoodenStick,
+};
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
@@ -72,6 +74,7 @@ fn main() -> BError {
     state.world.register::<Flint>();
     state.world.register::<Bush>();
     state.world.register::<WoodenStick>();
+    state.world.register::<Rose>();
 
     state.world.register::<WantsToPickupItem>();
     state.world.register::<InBackpack>();

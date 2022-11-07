@@ -1,8 +1,8 @@
-use bracket_lib::color::{BURLYWOOD, GREY};
+use bracket_lib::color::{BURLYWOOD, GREY, RED};
 use specs::{Builder, Entity, WorldExt, WriteStorage};
 
 use crate::components::items;
-use crate::components::items::{Flint, Item};
+use crate::components::items::{Flint, Item, Rose};
 use crate::map::{xy_to_idx, TileType, HEIGHT, MAP_COUNT, WIDTH};
 use crate::{
     to_cp437, Bush, Name, Player, Position, RandomNumberGenerator, Renderable, WoodenStick, World,
@@ -28,6 +28,7 @@ pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
 pub fn generate_items(world: &mut World) {
     generate_item(world, 32, bush);
     generate_item(world, 64, wooden_stick);
+    generate_item(world, 64, rose);
     generate_item(world, 128, flint);
 }
 
@@ -103,6 +104,25 @@ fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
         .with(WoodenStick {})
         .with(Name {
             name: "Wooden Stick".to_string(),
+        })
+        .build()
+}
+
+fn rose(world: &mut World, x: i32, y: i32) -> Entity {
+    world
+        .create_entity()
+        .with(Position { x, y })
+        .with(Renderable {
+            glyph: to_cp437('±'),
+            fg: RGB::named(RED),
+            bg: RGB::named(BLACK),
+        })
+        .with(Item {
+            can_be_picked: false,
+        })
+        .with(Rose {})
+        .with(Name {
+            name: "Rose".to_string(),
         })
         .build()
 }
