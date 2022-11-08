@@ -1,19 +1,23 @@
 use bracket_lib::color::{GREEN, RGB, WHITE};
 
 use crate::map::WIDTH;
+use crate::player::ControlMode;
 use crate::{BTerm, Log, World, BLACK};
 
 pub mod menu;
 
+#[derive(PartialEq, Copy, Clone)]
 pub enum MenuMode {
     Default,
     Interact,
+    Inventory,
 }
 
 pub struct UserInterfaceState {
     pub log: bool,
     pub menu: bool,
-    pub mode: MenuMode,
+    pub menu_mode: MenuMode,
+    pub control_mode: ControlMode,
 }
 
 pub fn draw_log(world: &World, ctx: &mut BTerm) {

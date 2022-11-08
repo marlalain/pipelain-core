@@ -1,11 +1,14 @@
+use std::collections::{BTreeMap, HashMap};
+
 use bracket_lib::color::{GREEN, RED, WHITE};
 use specs::hibitset::BitSetLike;
-use specs::{Join, WorldExt};
+use specs::shred::Fetch;
+use specs::{Entity, Join, WorldExt};
 
 use crate::map::{xy_to_idx, TileType};
 use crate::{
-    new_map, to_cp437, BTerm, Log, MenuMode, Player, Position, Renderable, UserInterfaceState,
-    World, BLACK, RGB,
+    new_map, to_cp437, BTerm, InBackpack, Log, MenuMode, Name, Player, Position, Renderable, State,
+    UserInterfaceState, World, BLACK, RGB,
 };
 
 #[derive(Clone)]
@@ -40,8 +43,8 @@ pub fn draw_menu(world: &World, ctx: &mut BTerm) {
     };
     ctx.draw_box(60, 0, 19, height, RGB::named(WHITE), RGB::named(BLACK));
 
-    match ui.mode {
-        MenuMode::Default => show_options(ctx, 62, 2),
+    match ui.menu_mode {
+        MenuMode::Default | MenuMode::Inventory => show_options(ctx, 62, 2),
         MenuMode::Interact => show_interact(world, ctx, 62, 2),
     }
 }
@@ -108,4 +111,43 @@ fn option(key: &str, name: &str) -> MenuOption {
         key: key.to_string(),
         name: name.to_string(),
     }
+}
+
+pub fn show_inventory(state: &mut State, ctx: &mut BTerm) {
+    let player = state.world.fetch::<Entity>();
+    let names = state.world.read_storage::<Name>();
+    let backpack = state.world.read_storage::<InBackpack>();
+
+    let inventory = (&backpack, &names)
+        .join()
+        .filter(|item| item_owner_is_player(item, &player));
+    let count = inventory.count();
+
+    ctx.draw_box(2, 2, 30, 30, RGB::named(WHITE), RGB::named(BLACK));
+    ctx.print_centered_at(17, 2, "your inventory");
+
+    let mut table: BTreeMap<&String, i32> = BTreeMap::new();
+    let mut y = 4;
+    for (_pack, name) in (&backpack, &names)
+        .join()
+        .filter(|item| item_owner_is_player(item, &player))
+    {
+        if table.contains_key(&name.name) {
+            let _table = table.clone();
+            let entry = _table.get(&name.name).unwrap();
+            table.remove(&name.name).unwrap();
+            table.insert(&name.name, entry + 1);
+        } else {
+            table.insert(&name.name, 1);
+        }
+    }
+
+    table.iter().for_each(|(name, amount)| {
+        ctx.print(4, y, format!("{} x{}", name, amount));
+        y += 1;
+    })
+}
+
+fn item_owner_is_player(item: &(&InBackpack, &Name), player: &Fetch<Entity>) -> bool {
+    item.0.owner == **player
 }

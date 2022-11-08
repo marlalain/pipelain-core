@@ -16,8 +16,7 @@ use crate::components::items::{
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
-use crate::player::player_input;
-use crate::player::Player;
+use crate::player::{ControlMode, Player};
 use crate::spawner::{generate_items, player};
 use crate::state::State;
 use crate::systems::pickup::PickupSystem;
@@ -90,7 +89,8 @@ fn main() -> BError {
     state.world.insert(UserInterfaceState {
         log: true,
         menu: true,
-        mode: MenuMode::Default,
+        menu_mode: MenuMode::Default,
+        control_mode: ControlMode::Default,
     });
 
     let player = player(&mut state.world, 40, 25);
