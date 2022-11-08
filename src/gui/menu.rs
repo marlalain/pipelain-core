@@ -95,6 +95,7 @@ fn show_options(ctx: &mut BTerm, x: i32, y: i32) {
         options: vec![
             option("d", "build"),
             option("i", "interact"),
+            option("e", "backpack"),
             option("c", "craft"),
             option("o", "options"),
         ],
@@ -124,7 +125,7 @@ pub fn show_inventory(state: &mut State, ctx: &mut BTerm) {
     let count = inventory.count();
 
     ctx.draw_box(2, 2, 30, 30, RGB::named(WHITE), RGB::named(BLACK));
-    ctx.print_centered_at(17, 2, "your inventory");
+    ctx.print_centered_at(17, 2, "backpack");
 
     let mut table: BTreeMap<&String, i32> = BTreeMap::new();
     let mut y = 4;

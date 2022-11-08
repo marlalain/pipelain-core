@@ -59,7 +59,7 @@ impl ControlMode {
                 U => try_move_player(1, -1, &mut state.world),
                 B => try_move_player(-1, 1, &mut state.world),
                 N => try_move_player(1, 1, &mut state.world),
-                Comma => get_item(&mut state.world),
+                Comma | G => get_item(&mut state.world),
                 Apostrophe | Grave => {
                     let mut ui = state.world.fetch_mut::<UserInterfaceState>();
                     ui.log = !ui.log
@@ -69,29 +69,27 @@ impl ControlMode {
                     ui.menu = !ui.menu
                 }
                 O => Log::by_world(&state.world, "there are no options yet"),
-                I => match ctx.shift {
-                    true => {
-                        let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+                E => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
 
-                        match ui.menu_mode {
-                            Inventory => ui.menu_mode = Default,
-                            _ => ui.menu_mode = Inventory,
-                        }
-
-                        match ui.control_mode {
-                            ControlMode::Inventory => ui.control_mode = ControlMode::Default,
-                            _ => ui.control_mode = ControlMode::Inventory,
-                        }
+                    match ui.menu_mode {
+                        Inventory => ui.menu_mode = Default,
+                        _ => ui.menu_mode = Inventory,
                     }
-                    false => {
-                        let mut ui = state.world.fetch_mut::<UserInterfaceState>();
 
-                        match ui.menu_mode {
-                            Interact => ui.menu_mode = Default,
-                            _ => ui.menu_mode = Interact,
-                        }
+                    match ui.control_mode {
+                        ControlMode::Inventory => ui.control_mode = ControlMode::Default,
+                        _ => ui.control_mode = ControlMode::Inventory,
                     }
-                },
+                }
+                I => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                    match ui.menu_mode {
+                        Interact => ui.menu_mode = Default,
+                        _ => ui.menu_mode = Interact,
+                    }
+                }
                 Q | Escape => ctx.quit(),
                 _ => {}
             },
