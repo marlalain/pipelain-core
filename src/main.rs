@@ -59,6 +59,7 @@ fn main() -> BError {
     let context = BTermBuilder::simple80x50()
         .with_title("PipeLain")
         .with_dimensions(160, 100)
+        .with_fps_cap(144.)
         .build()?;
 
     let mut state = State {
