@@ -20,9 +20,7 @@ pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
             bg: RGB::named(BLACK),
         })
         .with(Player {})
-        .with(Name {
-            name: "Player".to_string(),
-        })
+        .with(Name::new("Player"))
         .build()
 }
 
@@ -66,9 +64,7 @@ fn flint(world: &mut World, x: i32, y: i32) -> Entity {
             can_be_crafted: false,
         })
         .with(Flint {})
-        .with(Name {
-            name: "Flint".to_string(),
-        })
+        .with(Name::new("Flint"))
         .build()
 }
 
@@ -83,9 +79,7 @@ fn bush(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .with(Item::default())
         .with(Bush {})
-        .with(Name {
-            name: "Bush".to_string(),
-        })
+        .with(Name::new("Bush"))
         .build()
 }
 
@@ -103,9 +97,7 @@ fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
             can_be_crafted: false,
         })
         .with(WoodenStick {})
-        .with(Name {
-            name: "Wooden Stick".to_string(),
-        })
+        .with(Name::new("Wooden Stick"))
         .build()
 }
 
@@ -120,9 +112,7 @@ fn rose(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .with(Item::default())
         .with(Rose {})
-        .with(Name {
-            name: "Rose".to_string(),
-        })
+        .with(Name::new("Rose"))
         .build()
 }
 
@@ -137,9 +127,7 @@ pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
     builder
         .with(craftable())
         .with(Axe {})
-        .with(Name {
-            name: format!("{} Axe", name_by_tier(level).to_string()),
-        })
+        .with(Name::new(format!("{} Axe", name_by_tier(level)).as_ref()))
         .with(Tier {
             alternative_name: Some(format!("{} Axe", name_by_tier(level))),
             level,
@@ -152,9 +140,7 @@ pub fn fire_pit(builder: LazyBuilder, owner: Entity) {
     builder
         .with(craftable())
         .with(FirePit {})
-        .with(Name {
-            name: "Fire Pit".to_string(),
-        })
+        .with(Name::new("Fire Pit"))
         .with(InBackpack { owner })
         .build();
 }

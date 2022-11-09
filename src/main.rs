@@ -48,6 +48,14 @@ pub struct Name {
     name: String,
 }
 
+impl Name {
+    pub fn new(name: &str) -> Self {
+        Name {
+            name: name.to_string(),
+        }
+    }
+}
+
 impl Display for Name {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.name.as_str())
