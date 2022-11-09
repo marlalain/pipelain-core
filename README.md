@@ -22,6 +22,8 @@ Currently, you can change very few things. All you can change is performance/GUI
 performance show-fps=true fps-cap=144
 ```
 
+Write a file like the above named `config.kdl` and place it on the same directory as your game binary. Defaults to `~/.cargo/bin` on Unix systems.
+
 ## License
 
 The [LICENSE](LICENSE) is the BSD-3-Clause license. 
