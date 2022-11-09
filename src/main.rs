@@ -1,10 +1,14 @@
+use std::env;
 use std::fmt::{Display, Formatter};
+use std::fs::{read_to_string, File};
+use std::process::exit;
 
 use bracket_lib::color::{BLACK, RGB, YELLOW};
 use bracket_lib::prelude::{
     main_loop, to_cp437, BError, BTerm, BTermBuilder, FontCharType, GameState, VirtualKeyCode,
 };
 use bracket_lib::random::RandomNumberGenerator;
+use knuffel::{Decode, Error};
 use specs::DenseVecStorage;
 use specs::{Builder, World, WorldExt};
 use specs::{Component, Entity};
@@ -14,6 +18,7 @@ use crate::components::items::{
     Axe, BlocksMovement, Bush, CraftQueue, FirePit, Flint, InBackpack, Item, PickupQueue, Rose,
     Three, Tier, WoodenStick,
 };
+use crate::config::{load_config, Config};
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
@@ -23,6 +28,7 @@ use crate::state::State;
 use crate::systems::pickup::PickupSystem;
 
 mod components;
+mod config;
 mod gui;
 mod logs;
 mod map;
@@ -74,10 +80,18 @@ impl Display for Name {
 }
 
 fn main() -> BError {
+    let config = {
+        let inner = load_config();
+        match inner {
+            Config::Performance(perf) => perf,
+        }
+    };
+    println!("{}", config);
+
     let context = BTermBuilder::simple80x50()
         .with_title("PipeLain")
         .with_dimensions(160, 100)
-        .with_fps_cap(144.)
+        .with_fps_cap(f32::from(config.fps_cap))
         .build()?;
     let mut state = State::default();
 
@@ -114,7 +128,7 @@ fn main() -> BError {
             "press tab to show/hide the right side menu".to_string(),
         ],
     });
-    state.world.insert(UserInterfaceState::default());
+    state.world.insert(UserInterfaceState::new(config.show_fps));
 
     let player = player(&mut state.world, 40, 25);
     state.world.insert(player);

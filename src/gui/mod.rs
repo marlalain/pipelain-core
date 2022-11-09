@@ -21,6 +21,16 @@ pub struct UserInterfaceState {
     pub menu_mode: MenuMode,
     pub control_mode: ControlMode,
     pub selected_option: usize,
+    pub show_performance_info: bool,
+}
+
+impl UserInterfaceState {
+    pub fn new(show_performance_info: bool) -> Self {
+        Self {
+            show_performance_info,
+            ..Self::default()
+        }
+    }
 }
 
 impl Default for UserInterfaceState {
@@ -31,6 +41,7 @@ impl Default for UserInterfaceState {
             menu_mode: MenuMode::default(),
             control_mode: ControlMode::default(),
             selected_option: 0,
+            show_performance_info: true,
         }
     }
 }

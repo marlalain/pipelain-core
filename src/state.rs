@@ -75,10 +75,10 @@ impl GameState for State {
             }
         }
 
-        let mode = {
+        let (mode, show_perf) = {
             let ui = self.world.fetch::<UserInterfaceState>();
 
-            ui.menu_mode
+            (ui.menu_mode, ui.show_performance_info)
         };
 
         match mode {
@@ -90,8 +90,7 @@ impl GameState for State {
         draw_log(&self.world, ctx);
         draw_menu(&self.world, ctx);
 
-        let show_performance_info = true;
-        if show_performance_info {
+        if show_perf {
             ctx.print_color(
                 0,
                 0,

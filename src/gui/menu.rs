@@ -6,6 +6,8 @@ use specs::hibitset::BitSetLike;
 use specs::shred::Fetch;
 use specs::{Entity, Join, ReadStorage, WorldExt};
 
+use MenuMode::*;
+
 use crate::map::{xy_to_idx, TileType};
 use crate::systems::craft::RECIPES;
 use crate::{
@@ -46,8 +48,8 @@ pub fn draw_menu(world: &World, ctx: &mut BTerm) {
     ctx.draw_box(60, 0, 19, height, RGB::named(WHITE), RGB::named(BLACK));
 
     match ui.menu_mode {
-        MenuMode::Default | MenuMode::Inventory | MenuMode::Craft => show_options(ctx, 62, 2),
-        MenuMode::Interact => show_interact(world, ctx, 62, 2),
+        Default | Inventory | Craft => show_options(ctx, 62, 2),
+        Interact => show_interact(world, ctx, 62, 2),
     }
 }
 
