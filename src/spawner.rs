@@ -148,7 +148,7 @@ pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
         .build();
 }
 
-pub fn fire_pit(builder: LazyBuilder, owner: Entity) -> Entity {
+pub fn fire_pit(builder: LazyBuilder, owner: Entity) {
     builder
         .with(craftable())
         .with(FirePit {})
@@ -156,5 +156,5 @@ pub fn fire_pit(builder: LazyBuilder, owner: Entity) -> Entity {
             name: "Fire Pit".to_string(),
         })
         .with(InBackpack { owner })
-        .build()
+        .build();
 }
