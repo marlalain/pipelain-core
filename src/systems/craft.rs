@@ -72,8 +72,7 @@ impl<'a> System<'a> for CraftSystem {
         let item_name = &item_to_craft.unwrap().item_name;
         let recipe = RECIPES
             .iter()
-            .filter(|recipe| item_name == recipe.result_item_name)
-            .nth(0)
+            .find(|recipe| item_name == recipe.result_item_name)
             .unwrap();
 
         let to_remove = {
@@ -103,8 +102,7 @@ impl<'a> System<'a> for CraftSystem {
             let amount = recipe
                 .requirements
                 .iter()
-                .filter(|requirement| name == requirement.item_name.to_string())
-                .nth(0)
+                .find(|requirement| name == requirement.item_name.to_string())
                 .expect("could not find correct item to remove")
                 .amount as usize;
 
