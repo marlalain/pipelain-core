@@ -11,7 +11,8 @@ use specs::{Component, Entity};
 use specs_derive::Component;
 
 use crate::components::items::{
-    Axe, Bush, CraftQueue, FirePit, Flint, InBackpack, Item, PickupQueue, Rose, Tier, WoodenStick,
+    Axe, BlocksMovement, Bush, CraftQueue, FirePit, Flint, InBackpack, Item, PickupQueue, Rose,
+    Three, Tier, WoodenStick,
 };
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
@@ -95,7 +96,9 @@ fn main() -> BError {
     state.world.register::<Rose>();
     state.world.register::<Axe>();
     state.world.register::<FirePit>();
+    state.world.register::<Three>();
 
+    state.world.register::<BlocksMovement>();
     state.world.register::<PickupQueue>();
     state.world.register::<CraftQueue>();
     state.world.register::<InBackpack>();

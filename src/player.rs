@@ -7,7 +7,7 @@ use VirtualKeyCode::*;
 
 use MenuMode::{Interact, Inventory};
 
-use crate::components::items::get_item;
+use crate::components::items::{get_item, BlocksMovement};
 use crate::gui::menu::craft;
 use crate::map::{is_tile_walkable, xy_to_idx, TileType};
 use crate::systems::craft::RECIPES;
@@ -21,17 +21,26 @@ use crate::{
 pub struct Player {}
 
 fn try_move_player(delta_x: i32, delta_y: i32, world: &mut World) {
+    let blockers = world.read_storage::<BlocksMovement>();
     let mut positions = world.write_storage::<Position>();
     let mut players = world.write_storage::<Player>();
     let map = world.fetch::<Vec<TileType>>();
 
-    for (_player, pos) in (&mut players, &mut positions).join() {
-        let destination_idx = xy_to_idx(pos.x + delta_x, pos.y + delta_y);
+    let (player_x, player_y) = {
+        let player = (&players, &positions).join().nth(0).unwrap();
+        (player.1.x, player.1.y)
+    };
 
-        if is_tile_walkable(map[destination_idx]) {
-            pos.x = min(79, max(0, pos.x + delta_x));
-            pos.y = min(49, max(0, pos.y + delta_y));
-        }
+    let destination_idx = xy_to_idx(player_x + delta_x, player_y + delta_y);
+
+    let blocker = (&positions, &blockers).join().find(|(position, _)| {
+        (player_x + delta_x) == position.x && (player_y + delta_y) == position.y
+    });
+    let is_blocked = blocker.is_some();
+    if is_tile_walkable(map[destination_idx]) && !is_blocked {
+        let player = (&mut players, &mut positions).join().nth(0).unwrap();
+        player.1.x = min(79, max(0, player_x + delta_x));
+        player.1.y = min(49, max(0, player_y + delta_y));
     }
 }
 

@@ -10,7 +10,6 @@ pub const MAP_COUNT: usize = HEIGHT * WIDTH;
 
 #[derive(PartialEq, Copy, Clone)]
 pub enum TileType {
-    Tree,
     Wall,
     Floor,
 }
@@ -20,7 +19,6 @@ impl TileType {
         match self {
             TileType::Floor => ctx.set(x, y, fg, bg, to_cp437('.')),
             TileType::Wall => ctx.set(x, y, fg, bg, to_cp437('#')),
-            TileType::Tree => ctx.set(x, y, fg, bg, to_cp437('♣')),
         }
     }
 
@@ -36,9 +34,6 @@ impl TileType {
                 RGB::from_f32(0.25, 0.25, 0.25),
                 RGB::named(BLACK),
             ),
-            TileType::Tree => {
-                self.render_custom(ctx, x, y, RGB::from_f32(0., 1., 0.), RGB::named(BLACK))
-            }
         }
     }
 }
@@ -59,20 +54,6 @@ pub fn new_map() -> Vec<TileType> {
         map[xy_to_idx(0, y)] = TileType::Wall;
         map[xy_to_idx((WIDTH - 1) as i32, y)] = TileType::Wall;
     }
-
-    let mut rng = RandomNumberGenerator::new();
-
-    (0..(MAP_COUNT / 8)).into_iter().for_each(|_| {
-        let x = rng.roll_dice(1, (WIDTH - 1) as i32);
-        let y = rng.roll_dice(1, (HEIGHT - 1) as i32);
-        let idx = xy_to_idx(x, y);
-
-        let is_at_center = idx == xy_to_idx((WIDTH / 2) as i32, (HEIGHT / 2) as i32);
-        let is_something_already = map[idx] != TileType::Floor;
-        if !is_at_center && !is_something_already {
-            map[idx] = TileType::Tree;
-        }
-    });
 
     map
 }
@@ -97,7 +78,7 @@ pub fn draw_map(map: &[TileType], ctx: &mut BTerm) {
 
 pub fn is_tile_walkable(tt: TileType) -> bool {
     match tt {
-        TileType::Wall | TileType::Tree => false,
+        TileType::Wall => false,
         _ => true,
     }
 }

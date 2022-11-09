@@ -81,6 +81,12 @@ pub fn name_by_tier(level: u8) -> &'static str {
 }
 
 #[derive(Component)]
+pub struct BlocksMovement {}
+
+#[derive(Component)]
+pub struct Three {}
+
+#[derive(Component)]
 pub struct Flint {}
 
 #[derive(Component)]

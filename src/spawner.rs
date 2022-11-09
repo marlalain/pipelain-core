@@ -1,9 +1,9 @@
-use bracket_lib::color::{BURLYWOOD, GREY, RED};
+use bracket_lib::color::{BURLYWOOD, GREEN, GREY, RED};
 use specs::world::{EntityResBuilder, LazyBuilder};
 use specs::{Builder, Entity, EntityBuilder, ReadExpect, WorldExt, WriteStorage};
 
 use crate::components::items;
-use crate::components::items::{name_by_tier, Flint, Item, Rose};
+use crate::components::items::{name_by_tier, BlocksMovement, Flint, Item, Rose, Three};
 use crate::map::{xy_to_idx, TileType, HEIGHT, MAP_COUNT, WIDTH};
 use crate::{
     to_cp437, Axe, Bush, FirePit, InBackpack, Name, Player, Position, RandomNumberGenerator,
@@ -25,6 +25,7 @@ pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
 }
 
 pub fn generate_items(world: &mut World) {
+    generate_item(world, 8, three);
     generate_item(world, 32, bush);
     generate_item(world, 64, wooden_stick);
     generate_item(world, 64, rose);
@@ -48,6 +49,17 @@ fn generate_item(
             generator(world, x, y);
         }
     });
+}
+
+fn three(world: &mut World, x: i32, y: i32) -> Entity {
+    world
+        .create_entity()
+        .with(Position { x, y })
+        .with(Renderable::new(to_cp437('♣'), RGB::named(GREEN)))
+        .with(Name::new("Three"))
+        .with(Three {})
+        .with(BlocksMovement {})
+        .build()
 }
 
 fn flint(world: &mut World, x: i32, y: i32) -> Entity {
