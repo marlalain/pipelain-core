@@ -6,8 +6,8 @@ use crate::components::items;
 use crate::components::items::{name_by_tier, Flint, Item, Rose};
 use crate::map::{xy_to_idx, TileType, HEIGHT, MAP_COUNT, WIDTH};
 use crate::{
-    to_cp437, Axe, Bush, InBackpack, Name, Player, Position, RandomNumberGenerator, Renderable,
-    Tier, WoodenStick, World, BLACK, RGB, YELLOW,
+    to_cp437, Axe, Bush, FirePit, InBackpack, Name, Player, Position, RandomNumberGenerator,
+    Renderable, Tier, WoodenStick, World, BLACK, RGB, YELLOW,
 };
 
 pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
@@ -125,12 +125,17 @@ fn rose(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .build()
 }
+
+fn craftable() -> Item {
+    Item {
+        can_be_picked: true,
+        can_be_crafted: true,
+    }
+}
+
 pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
     builder
-        .with(Item {
-            can_be_picked: true,
-            can_be_crafted: true,
-        })
+        .with(craftable())
         .with(Axe {})
         .with(Name {
             name: format!("{} Axe", name_by_tier(level).to_string()),
@@ -141,4 +146,15 @@ pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
         })
         .with(InBackpack { owner })
         .build();
+}
+
+pub fn fire_pit(builder: LazyBuilder, owner: Entity) -> Entity {
+    builder
+        .with(craftable())
+        .with(FirePit {})
+        .with(Name {
+            name: "Fire Pit".to_string(),
+        })
+        .with(InBackpack { owner })
+        .build()
 }

@@ -7,7 +7,7 @@ use specs::{
 };
 
 use crate::components::items::CraftQueue;
-use crate::spawner::axe;
+use crate::spawner::{axe, fire_pit};
 use crate::{InBackpack, Name};
 
 pub struct Requirement {
@@ -117,6 +117,7 @@ impl<'a> System<'a> for CraftSystem {
 
         match item_name.as_ref() {
             "Flint Axe" => axe(lazy.create_entity(&entities), *player, 0),
+            "Fire Pit" => fire_pit(lazy.create_entity(&entities), *player),
             _ => println!("tried to craft {}", item_name),
         }
 
