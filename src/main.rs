@@ -79,14 +79,10 @@ fn main() -> BError {
         .with_dimensions(160, 100)
         .with_fps_cap(144.)
         .build()?;
-
-    let mut state = State {
-        world: World::new(),
-    };
+    let mut state = State::default();
 
     state.world.register::<Position>();
     state.world.register::<Renderable>();
-    state.world.register::<Player>();
     state.world.register::<Name>();
     state.world.register::<Item>();
 
@@ -112,13 +108,7 @@ fn main() -> BError {
             "press tab to show/hide the right side menu".to_string(),
         ],
     });
-    state.world.insert(UserInterfaceState {
-        log: true,
-        menu: true,
-        menu_mode: MenuMode::default(),
-        control_mode: ControlMode::default(),
-        selected_option: 0,
-    });
+    state.world.insert(UserInterfaceState::default());
 
     let player = player(&mut state.world, 40, 25);
     state.world.insert(player);

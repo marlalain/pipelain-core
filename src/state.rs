@@ -19,6 +19,14 @@ pub struct State {
     pub world: World,
 }
 
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            world: World::new(),
+        }
+    }
+}
+
 impl State {
     fn run_systems(&mut self) {
         let mut pickup = PickupSystem {};

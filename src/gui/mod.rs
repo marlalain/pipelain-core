@@ -23,6 +23,18 @@ pub struct UserInterfaceState {
     pub selected_option: usize,
 }
 
+impl Default for UserInterfaceState {
+    fn default() -> Self {
+        UserInterfaceState {
+            log: true,
+            menu: true,
+            menu_mode: MenuMode::default(),
+            control_mode: ControlMode::default(),
+            selected_option: 0,
+        }
+    }
+}
+
 pub fn draw_log(world: &World, ctx: &mut BTerm) {
     let ui = world.fetch::<UserInterfaceState>();
 
