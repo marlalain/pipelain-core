@@ -43,6 +43,16 @@ pub struct Renderable {
     bg: RGB,
 }
 
+impl Renderable {
+    pub fn new(glyph: FontCharType, fg: RGB) -> Self {
+        Self {
+            glyph,
+            fg,
+            bg: RGB::named(BLACK),
+        }
+    }
+}
+
 #[derive(Component, Debug)]
 pub struct Name {
     name: String,

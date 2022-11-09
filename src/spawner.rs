@@ -54,11 +54,7 @@ fn flint(world: &mut World, x: i32, y: i32) -> Entity {
     world
         .create_entity()
         .with(Position { x, y })
-        .with(Renderable {
-            glyph: to_cp437('°'),
-            fg: RGB::named(GREY),
-            bg: RGB::named(BLACK),
-        })
+        .with(Renderable::new(to_cp437('°'), RGB::named(GREY)))
         .with(Item {
             can_be_picked: true,
             can_be_crafted: false,
@@ -72,11 +68,7 @@ fn bush(world: &mut World, x: i32, y: i32) -> Entity {
     world
         .create_entity()
         .with(Position { x, y })
-        .with(Renderable {
-            glyph: to_cp437('%'),
-            fg: RGB::from_f32(0., 0.75, 0.),
-            bg: RGB::named(BLACK),
-        })
+        .with(Renderable::new(to_cp437('%'), RGB::from_f32(0., 0.75, 0.)))
         .with(Item::default())
         .with(Bush {})
         .with(Name::new("Bush"))
@@ -87,11 +79,7 @@ fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
     world
         .create_entity()
         .with(Position { x, y })
-        .with(Renderable {
-            glyph: to_cp437('\\'),
-            fg: RGB::named(BURLYWOOD),
-            bg: RGB::named(BLACK),
-        })
+        .with(Renderable::new(to_cp437('\\'), RGB::named(BURLYWOOD)))
         .with(Item {
             can_be_picked: true,
             can_be_crafted: false,
@@ -105,11 +93,7 @@ fn rose(world: &mut World, x: i32, y: i32) -> Entity {
     world
         .create_entity()
         .with(Position { x, y })
-        .with(Renderable {
-            glyph: to_cp437('±'),
-            fg: RGB::named(RED),
-            bg: RGB::named(BLACK),
-        })
+        .with(Renderable::new(to_cp437('±'), RGB::named(RED)))
         .with(Item::default())
         .with(Rose {})
         .with(Name::new("Rose"))
@@ -126,6 +110,7 @@ fn craftable() -> Item {
 pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
     builder
         .with(craftable())
+        .with(Renderable::new(to_cp437('P'), RGB::named(GREY)))
         .with(Axe {})
         .with(Name::new(format!("{} Axe", name_by_tier(level)).as_ref()))
         .with(Tier {
@@ -139,6 +124,7 @@ pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
 pub fn fire_pit(builder: LazyBuilder, owner: Entity) {
     builder
         .with(craftable())
+        .with(Renderable::new(to_cp437('▬'), RGB::named(BURLYWOOD)))
         .with(FirePit {})
         .with(Name::new("Fire Pit"))
         .with(InBackpack { owner })
