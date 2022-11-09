@@ -81,11 +81,14 @@ fn main() -> BError {
         .build()?;
     let mut state = State::default();
 
+    // Qualifiers
     state.world.register::<Position>();
     state.world.register::<Renderable>();
     state.world.register::<Name>();
     state.world.register::<Item>();
+    state.world.register::<Tier>();
 
+    // Items
     state.world.register::<Flint>();
     state.world.register::<Bush>();
     state.world.register::<WoodenStick>();
@@ -94,11 +97,14 @@ fn main() -> BError {
     state.world.register::<FirePit>();
     state.world.register::<Three>();
 
+    // Tags
     state.world.register::<BlocksMovement>();
+    state.world.register::<Player>();
+    state.world.register::<InBackpack>();
+
+    // Queues
     state.world.register::<PickupQueue>();
     state.world.register::<CraftQueue>();
-    state.world.register::<InBackpack>();
-    state.world.register::<Tier>();
 
     state.world.insert(new_map());
     state.world.insert(Log {
