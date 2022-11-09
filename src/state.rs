@@ -5,7 +5,7 @@ use specs::{Join, RunNow, WorldExt};
 
 use gui::draw_log;
 
-use crate::components::items::WantsToPickupItem;
+use crate::components::items::PickupQueue;
 use crate::gui::menu::{draw_menu, show_craft, show_inventory};
 use crate::map::{draw_map, TileType};
 use crate::systems::craft::CraftSystem;

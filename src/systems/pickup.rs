@@ -1,6 +1,6 @@
 use specs::{Entity, Join, ReadExpect, ReadStorage, System, WriteExpect, WriteStorage};
 
-use crate::components::items::{InBackpack, WantsToPickupItem};
+use crate::components::items::{InBackpack, PickupQueue};
 use crate::{Log, Name, Position};
 
 pub struct PickupSystem {}
@@ -9,7 +9,7 @@ impl<'a> System<'a> for PickupSystem {
     type SystemData = (
         ReadExpect<'a, Entity>,
         WriteExpect<'a, Log>,
-        WriteStorage<'a, WantsToPickupItem>,
+        WriteStorage<'a, PickupQueue>,
         WriteStorage<'a, Position>,
         ReadStorage<'a, Name>,
         WriteStorage<'a, InBackpack>,

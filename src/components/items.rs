@@ -37,11 +37,11 @@ pub fn get_item(world: &mut World) {
     match target {
         None => log.log("there is nothing to be picked up here"),
         Some(item) => {
-            let mut pickup = world.write_storage::<WantsToPickupItem>();
+            let mut pickup = world.write_storage::<PickupQueue>();
             pickup
                 .insert(
                     *player,
-                    WantsToPickupItem {
+                    PickupQueue {
                         collected_by: *player,
                         item,
                     },
@@ -57,7 +57,7 @@ pub struct InBackpack {
 }
 
 #[derive(Component, Debug, Clone)]
-pub struct WantsToPickupItem {
+pub struct PickupQueue {
     pub collected_by: Entity,
     pub item: Entity,
 }
