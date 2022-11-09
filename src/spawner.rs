@@ -1,12 +1,13 @@
 use bracket_lib::color::{BURLYWOOD, GREY, RED};
-use specs::{Builder, Entity, WorldExt, WriteStorage};
+use specs::world::{EntityResBuilder, LazyBuilder};
+use specs::{Builder, Entity, EntityBuilder, ReadExpect, WorldExt, WriteStorage};
 
 use crate::components::items;
-use crate::components::items::{Flint, Item, Rose};
+use crate::components::items::{name_by_tier, Flint, Item, Rose};
 use crate::map::{xy_to_idx, TileType, HEIGHT, MAP_COUNT, WIDTH};
 use crate::{
-    to_cp437, Bush, Name, Player, Position, RandomNumberGenerator, Renderable, WoodenStick, World,
-    BLACK, RGB, YELLOW,
+    to_cp437, Axe, Bush, InBackpack, Name, Player, Position, RandomNumberGenerator, Renderable,
+    Tier, WoodenStick, World, BLACK, RGB, YELLOW,
 };
 
 pub fn player(world: &mut World, x: i32, y: i32) -> Entity {
@@ -62,6 +63,7 @@ fn flint(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .with(Item {
             can_be_picked: true,
+            can_be_crafted: false,
         })
         .with(Flint {})
         .with(Name {
@@ -79,9 +81,7 @@ fn bush(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::from_f32(0., 0.75, 0.),
             bg: RGB::named(BLACK),
         })
-        .with(Item {
-            can_be_picked: false,
-        })
+        .with(Item::default())
         .with(Bush {})
         .with(Name {
             name: "Bush".to_string(),
@@ -100,6 +100,7 @@ fn wooden_stick(world: &mut World, x: i32, y: i32) -> Entity {
         })
         .with(Item {
             can_be_picked: true,
+            can_be_crafted: false,
         })
         .with(WoodenStick {})
         .with(Name {
@@ -117,12 +118,27 @@ fn rose(world: &mut World, x: i32, y: i32) -> Entity {
             fg: RGB::named(RED),
             bg: RGB::named(BLACK),
         })
-        .with(Item {
-            can_be_picked: false,
-        })
+        .with(Item::default())
         .with(Rose {})
         .with(Name {
             name: "Rose".to_string(),
         })
         .build()
+}
+pub fn axe(builder: LazyBuilder, owner: Entity, level: u8) {
+    builder
+        .with(Item {
+            can_be_picked: true,
+            can_be_crafted: true,
+        })
+        .with(Axe {})
+        .with(Name {
+            name: format!("{} Axe", name_by_tier(level).to_string()),
+        })
+        .with(Tier {
+            alternative_name: Some(format!("{} Axe", name_by_tier(level))),
+            level,
+        })
+        .with(InBackpack { owner })
+        .build();
 }

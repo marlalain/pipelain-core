@@ -11,13 +11,14 @@ use specs::{Component, Entity};
 use specs_derive::Component;
 
 use crate::components::items::{
-    Bush, Flint, InBackpack, Item, Rose, WantsToPickupItem, WoodenStick,
+    Axe, Bush, CraftQueue, FirePit, Flint, InBackpack, Item, Rose, Tier, WantsToPickupItem,
+    WoodenStick,
 };
 use crate::gui::{MenuMode, UserInterfaceState};
 use crate::logs::Log;
 use crate::map::new_map;
 use crate::player::{ControlMode, Player};
-use crate::spawner::{generate_items, player};
+use crate::spawner::{axe, generate_items, player};
 use crate::state::State;
 use crate::systems::pickup::PickupSystem;
 
@@ -74,9 +75,13 @@ fn main() -> BError {
     state.world.register::<Bush>();
     state.world.register::<WoodenStick>();
     state.world.register::<Rose>();
+    state.world.register::<Axe>();
+    state.world.register::<FirePit>();
 
     state.world.register::<WantsToPickupItem>();
+    state.world.register::<CraftQueue>();
     state.world.register::<InBackpack>();
+    state.world.register::<Tier>();
 
     state.world.insert(new_map());
     state.world.insert(Log {
@@ -89,14 +94,14 @@ fn main() -> BError {
     state.world.insert(UserInterfaceState {
         log: true,
         menu: true,
-        menu_mode: MenuMode::Default,
-        control_mode: ControlMode::Default,
+        menu_mode: MenuMode::default(),
+        control_mode: ControlMode::default(),
+        selected_option: 0,
     });
 
     let player = player(&mut state.world, 40, 25);
-    generate_items(&mut state.world);
-
     state.world.insert(player);
+    generate_items(&mut state.world);
 
     main_loop(context, state)
 }

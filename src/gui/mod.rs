@@ -6,11 +6,13 @@ use crate::{BTerm, Log, World, BLACK};
 
 pub mod menu;
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq, Copy, Clone, Default)]
 pub enum MenuMode {
+    #[default]
     Default,
     Interact,
     Inventory,
+    Craft,
 }
 
 pub struct UserInterfaceState {
@@ -18,6 +20,7 @@ pub struct UserInterfaceState {
     pub menu: bool,
     pub menu_mode: MenuMode,
     pub control_mode: ControlMode,
+    pub selected_option: usize,
 }
 
 pub fn draw_log(world: &World, ctx: &mut BTerm) {

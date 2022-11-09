@@ -3,9 +3,10 @@ use specs::{Entity, Join, WorldExt};
 use crate::{Component, Player, Position, World};
 use crate::{DenseVecStorage, Log};
 
-#[derive(Component, Debug)]
+#[derive(Component, Debug, Default)]
 pub struct Item {
     pub can_be_picked: bool,
+    pub can_be_crafted: bool,
 }
 
 pub fn get_item(world: &mut World) {
@@ -61,6 +62,24 @@ pub struct WantsToPickupItem {
     pub item: Entity,
 }
 
+#[derive(Component, Debug, Clone)]
+pub struct CraftQueue {
+    pub item_name: String,
+}
+
+#[derive(Component)]
+pub struct Tier {
+    pub level: u8,
+    pub alternative_name: Option<String>,
+}
+
+pub fn name_by_tier(level: u8) -> &'static str {
+    match level {
+        0 => "Flint",
+        _ => todo!(),
+    }
+}
+
 #[derive(Component)]
 pub struct Flint {}
 
@@ -72,3 +91,9 @@ pub struct WoodenStick {}
 
 #[derive(Component)]
 pub struct Rose {}
+
+#[derive(Component)]
+pub struct Axe {}
+
+#[derive(Component)]
+pub struct FirePit {}

@@ -1,16 +1,18 @@
 use std::borrow::{Borrow, BorrowMut};
 
+use bracket_lib::color::WHITE;
 use specs::{Join, RunNow, WorldExt};
 
 use gui::draw_log;
 
 use crate::components::items::WantsToPickupItem;
-use crate::gui::menu::{draw_menu, show_inventory};
+use crate::gui::menu::{draw_menu, show_craft, show_inventory};
 use crate::map::{draw_map, TileType};
+use crate::systems::craft::CraftSystem;
 use crate::systems::pickup::PickupSystem;
 use crate::{
     gui, BTerm, ControlMode, GameState, MenuMode, Name, Player, Position, Renderable,
-    UserInterfaceState, World,
+    UserInterfaceState, World, BLACK, RGB,
 };
 
 pub struct State {
@@ -21,6 +23,10 @@ impl State {
     fn run_systems(&mut self) {
         let mut pickup = PickupSystem {};
         pickup.run_now(&self.world);
+        self.world.maintain();
+
+        let mut craft = CraftSystem {};
+        craft.run_now(&self.world);
 
         self.world.maintain();
     }
@@ -67,11 +73,32 @@ impl GameState for State {
             ui.menu_mode
         };
 
-        if mode == MenuMode::Inventory {
-            show_inventory(self, ctx);
+        match mode {
+            MenuMode::Inventory => show_inventory(self, ctx),
+            MenuMode::Craft => show_craft(self, ctx),
+            _ => {}
         }
 
         draw_log(&self.world, ctx);
         draw_menu(&self.world, ctx);
+
+        let show_performance_info = true;
+        if show_performance_info {
+            ctx.print_color(
+                0,
+                0,
+                RGB::named(WHITE),
+                RGB::named(BLACK),
+                format!("{} fps", ctx.fps),
+            );
+
+            ctx.print_color(
+                0,
+                1,
+                RGB::named(WHITE),
+                RGB::named(BLACK),
+                format!("{}ms/frame", ctx.frame_time_ms),
+            );
+        }
     }
 }

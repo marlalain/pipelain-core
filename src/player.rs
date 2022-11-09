@@ -8,8 +8,10 @@ use VirtualKeyCode::*;
 use MenuMode::{Interact, Inventory};
 
 use crate::components::items::get_item;
+use crate::gui::menu::craft;
 use crate::map::{is_tile_walkable, xy_to_idx, TileType};
-use crate::MenuMode::Default;
+use crate::systems::craft::RECIPES;
+use crate::MenuMode::{Craft, Default};
 use crate::{
     BTerm, DenseVecStorage, Log, MenuMode, Position, State, UserInterfaceState, VirtualKeyCode,
     World,
@@ -33,10 +35,12 @@ fn try_move_player(delta_x: i32, delta_y: i32, world: &mut World) {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub enum ControlMode {
+    #[default]
     Default,
     Inventory,
+    Craft,
 }
 
 impl ControlMode {
@@ -44,6 +48,7 @@ impl ControlMode {
         match self {
             ControlMode::Default => ControlMode::default(state, ctx),
             ControlMode::Inventory => ControlMode::inventory(state, ctx),
+            ControlMode::Craft => ControlMode::craft(state, ctx),
         }
     }
 
@@ -82,6 +87,21 @@ impl ControlMode {
                         _ => ui.control_mode = ControlMode::Inventory,
                     }
                 }
+                C => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                    match ui.menu_mode {
+                        Craft => ui.menu_mode = Default,
+                        _ => ui.menu_mode = Craft,
+                    };
+
+                    match ui.control_mode {
+                        ControlMode::Craft => ui.control_mode = ControlMode::Default,
+                        _ => ui.control_mode = ControlMode::Craft,
+                    };
+
+                    ui.selected_option = 0;
+                }
                 I => {
                     let mut ui = state.world.fetch_mut::<UserInterfaceState>();
 
@@ -106,6 +126,40 @@ impl ControlMode {
                     ui.control_mode = ControlMode::Default;
                     ui.menu_mode = Default
                 }
+                _ => {}
+            },
+        }
+    }
+
+    fn craft(state: &mut State, ctx: &mut BTerm) {
+        match ctx.key {
+            None => {}
+            Some(key) => match key {
+                Escape | Q => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                    ui.control_mode = ControlMode::Default;
+                    ui.menu_mode = Default
+                }
+                J | Down => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                    if ui.selected_option + 2 > RECIPES.len() {
+                        return;
+                    }
+
+                    ui.selected_option += 1;
+                }
+                K | Up => {
+                    let mut ui = state.world.fetch_mut::<UserInterfaceState>();
+
+                    if ui.selected_option == 0 {
+                        return;
+                    }
+
+                    ui.selected_option -= 1;
+                }
+                Return | Space => craft(state, ctx),
                 _ => {}
             },
         }
